@@ -1,10 +1,22 @@
 {
   "name": "website-scraper-puppeteer",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Plugin for website-scraper which returns html for dynamic websites using puppeteer",
+  "readmeFilename": "README.md",
   "main": "index.js",
+  "keywords": [
+    "website-scraper",
+    "puppeteer",
+    "chromium",
+    "chrome",
+    "headless",
+    "html"
+  ],
   "dependencies": {
     "puppeteer": "^1.11.0"
+  },
+  "peerDependencies": {
+    "website-scraper": "^4.0.0"
   },
   "devDependencies": {
     "chai": "^4.2.0",
@@ -21,10 +33,13 @@
     "type": "git",
     "url": "git+https://github.com/website-scraper/website-scraper-puppeteer.git"
   },
-  "author": "",
+  "author": "Sophia Antipenko <sophia@antipenko.pp.ua>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/website-scraper/website-scraper-puppeteer/issues"
   },
-  "homepage": "https://github.com/website-scraper/website-scraper-puppeteer#readme"
+  "homepage": "https://github.com/website-scraper/website-scraper-puppeteer#readme",
+  "files": [
+    "index.js"
+  ]
 }
