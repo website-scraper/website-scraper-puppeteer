@@ -1,0 +1,30 @@
+{
+  "name": "website-scraper-puppeteer",
+  "version": "0.0.0",
+  "description": "Plugin for website-scraper which returns html for dynamic websites using puppeteer",
+  "main": "index.js",
+  "dependencies": {
+    "puppeteer": "^1.11.0"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "finalhandler": "^1.1.1",
+    "fs-extra": "^7.0.1",
+    "mocha": "^5.2.0",
+    "serve-static": "^1.13.2",
+    "website-scraper": "^4.0.0"
+  },
+  "scripts": {
+    "test": "mocha --timeout 10000 --exit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/website-scraper/website-scraper-puppeteer.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/website-scraper/website-scraper-puppeteer/issues"
+  },
+  "homepage": "https://github.com/website-scraper/website-scraper-puppeteer#readme"
+}
