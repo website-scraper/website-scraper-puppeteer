@@ -14,7 +14,7 @@ class PuppeteerPlugin {
 
 		registerAction('beforeRequest', async ({requestOptions}) => {
 			if (hasValues(requestOptions.headers)) {
-				this.headers = requestOptions.headers;
+				this.headers = Object.assign({}, requestOptions.headers);
 			}
 			return {requestOptions};
 		});
