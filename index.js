@@ -1,11 +1,22 @@
 const puppeteer = require('puppeteer');
 
 class PuppeteerPlugin {
-	apply(registerAction) {
-		let browser;
+	constructor({launchOptions = {}} = {}) {
+		this.launchOptions = launchOptions;
+		this.browser = null;
+		this.headers = {};
+	}
 
+	apply(registerAction) {
 		registerAction('beforeStart', async () => {
-			browser = await puppeteer.launch();
+			this.browser = await puppeteer.launch(this.launchOptions);
+		});
+
+		registerAction('beforeRequest', async ({requestOptions}) => {
+			if (hasValues(requestOptions.headers)) {
+				this.headers = requestOptions.headers;
+			}
+			return {requestOptions};
 		});
 
 		registerAction('afterResponse', async ({response}) => {
@@ -14,7 +25,10 @@ class PuppeteerPlugin {
 			if (isHtml) {
 				const url = response.request.href;
 
-				const page = await browser.newPage();
+				const page = await this.browser.newPage();
+				if (hasValues(this.headers)) {
+					await page.setExtraHTTPHeaders(this.headers);
+				}
 				await page.goto(url);
 				const content = await page.content();
 				await page.close();
@@ -24,8 +38,12 @@ class PuppeteerPlugin {
 			}
 		});
 
-		registerAction('afterFinish', () => browser.close());
+		registerAction('afterFinish', () => this.browser && this.browser.close());
 	}
+}
+
+function hasValues(obj) {
+	return obj && Object.keys(obj).length > 0;
 }
 
 module.exports = PuppeteerPlugin;
