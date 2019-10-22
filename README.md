@@ -22,9 +22,11 @@ const PuppeteerPlugin = require('website-scraper-puppeteer');
 scrape({
     urls: ['https://www.instagram.com/gopro/'],
     directory: '/path/to/save',
-    plugins: [ new PuppeteerPlugin() ]
+    plugins: [ new PuppeteerPlugin({launchOptions: {}}) ] 
 });
 ```
+Puppeteer plugin constructor accepts next params:
+* `launchOptions` - puppeteer launch options, can be found in [puppeteer docs](https://github.com/GoogleChrome/puppeteer/blob/v1.20.0/docs/api.md#puppeteerlaunchoptions)
 
 ## How it works
 It starts Chromium in headless mode which just opens page and waits until page is loaded.
