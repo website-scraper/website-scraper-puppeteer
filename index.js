@@ -30,6 +30,7 @@ class PuppeteerPlugin {
 					await page.setExtraHTTPHeaders(this.headers);
 				}
 				await page.goto(url);
+				await scrollToBottom(page);
 				const content = await page.content();
 				await page.close();
 				return content;
@@ -44,6 +45,25 @@ class PuppeteerPlugin {
 
 function hasValues(obj) {
 	return obj && Object.keys(obj).length > 0;
+}
+
+async function scrollToBottom(page) {
+	await page.evaluate(async () => {
+		await new Promise((resolve, reject) => {
+			let totalHeight = 0
+			let distance = 50
+			let timer = setInterval(() => {
+				let scrollHeight = document.body.scrollHeight
+				window.scrollBy(0, distance)
+				totalHeight += distance
+
+				if(totalHeight >= scrollHeight) {
+					clearInterval(timer)
+					resolve()
+				}
+			}, 50)
+		})
+	})
 }
 
 module.exports = PuppeteerPlugin;
