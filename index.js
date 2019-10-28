@@ -1,8 +1,12 @@
 const puppeteer = require('puppeteer');
 
 class PuppeteerPlugin {
-	constructor({launchOptions = {}} = {}) {
+	constructor(
+		{launchOptions = {}} = {},
+		{scrollToBottom = undefined} = {}
+	) {
 		this.launchOptions = launchOptions;
+		this.scrollToBottom = scrollToBottom;
 		this.browser = null;
 		this.headers = {};
 	}
@@ -30,6 +34,11 @@ class PuppeteerPlugin {
 					await page.setExtraHTTPHeaders(this.headers);
 				}
 				await page.goto(url);
+
+				if(this.scrollToBottom) {
+					await scrollToBottom(page, this.scrollToBottom.timeout, this.scrollToBottom.viewportN);
+				}
+
 				const content = await page.content();
 				await page.close();
 				return content;
@@ -44,6 +53,24 @@ class PuppeteerPlugin {
 
 function hasValues(obj) {
 	return obj && Object.keys(obj).length > 0;
+}
+
+
+async function scrollToBottom(page, timeout, viewportN){
+   await page.evaluate(async (timeout, viewportN) => {
+      await new Promise((resolve, reject) => {
+         var totalHeight = 0, distance = 200, duration = 0, maxHeight = window.innerHeight * viewportN;
+         var timer = setInterval(() => {
+				duration += 200;
+            window.scrollBy(0, distance);
+            totalHeight += distance;
+            if(totalHeight >= document.body.scrollHeight || duration >= timeout || totalHeight >= maxHeight){
+              clearInterval(timer);
+              resolve();
+            }
+         }, 200);
+      });
+   }, timeout, viewportN);
 }
 
 module.exports = PuppeteerPlugin;
