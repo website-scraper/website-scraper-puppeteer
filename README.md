@@ -22,17 +22,19 @@ const PuppeteerPlugin = require('website-scraper-puppeteer');
 scrape({
     urls: ['https://www.instagram.com/gopro/'],
     directory: '/path/to/save',
-    plugins: [ new PuppeteerPlugin(
-        {launchOptions: {}},
-        {scrollToBottom: { timeout: 10000, viewportN: 10 }} /*optional*/
-    )]
+    plugins: [ 
+      new PuppeteerPlugin({
+        launchOptions: { headless: false }, /* optional */
+        scrollToBottom: { timeout: 10000, viewportN: 10 } /* optional */
+      })
+    ]
 });
 ```
 Puppeteer plugin constructor accepts next params:
-* `launchOptions` - puppeteer launch options, can be found in [puppeteer docs](https://github.com/GoogleChrome/puppeteer/blob/v1.20.0/docs/api.md#puppeteerlaunchoptions)
+* `launchOptions` - *(optional)* - puppeteer launch options, can be found in [puppeteer docs](https://github.com/GoogleChrome/puppeteer/blob/v1.20.0/docs/api.md#puppeteerlaunchoptions)
 * `scrollToBottom` - *(optional)* - in some cases, the page needs to be scrolled down to render its assets (lazyloading). Because some pages can be really endless, the scrolldown process can be interrupted before reaching the bottom when one or both of the bellow limitations are reached :
     * `timeout` - in milliseconds
-    * `viewportN` - viewportheight multiplier
+    * `viewportN` - viewport height multiplier
 
 ## How it works
 It starts Chromium in headless mode which just opens page and waits until page is loaded.
