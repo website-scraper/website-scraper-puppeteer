@@ -41,7 +41,7 @@ class PuppeteerPlugin {
 
 				const content = await page.content();
 				await page.close();
-				return content;
+				return Buffer.from(content).toString('binary');
 			} else {
 				return response.body;
 			}
