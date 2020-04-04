@@ -9,21 +9,32 @@ const PuppeteerPlugin = require('../index');
 const directory = __dirname + '/tmp';
 
 describe('Puppeteer plugin test', () => {
+	let result, content;
+
 	before('serve website', () => serveWebsite(4567));
-
-	after('delete dir', () => fs.removeSync(directory));
-
-	it('should render dymanic website', async () => {
-		const result = await scrape({
+	before('scrape website', async () => {
+		result = await scrape({
 			urls: ['http://localhost:4567'],
 			directory: directory,
 			plugins: [ new PuppeteerPlugin() ]
 		});
+	});
+	before('get content from file', () => {
+		content = fs.readFileSync(`${directory}/${result[0].filename}`).toString();
+	});
 
+	after('delete dir', () => fs.removeSync(directory));
+
+	it('should have 1 item in result array', () => {
 		expect(result.length).eql(1);
+	});
 
-		const content = fs.readFileSync(`${directory}/${result[0].filename}`).toString();
+	it('should render dymanic website', async () => {
 		expect(content).to.contain('<div id="root">Hello world from JS!</div>');
+	});
+
+	it('should render special characters correctly', async () => {
+		expect(content).to.contain('<div id="special-characters-test">저는 7년 동안 한국에서 살았어요. Слава Україні!</div>');
 	});
 });
 
