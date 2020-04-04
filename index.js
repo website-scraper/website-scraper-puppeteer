@@ -41,7 +41,8 @@ class PuppeteerPlugin {
 
 				const content = await page.content();
 				await page.close();
-				return content;
+				// convert utf-8 -> binary string because website-scraper needs binary
+				return Buffer.from(content).toString('binary');
 			} else {
 				return response.body;
 			}
