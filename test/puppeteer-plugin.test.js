@@ -4,7 +4,7 @@ const finalhandler = require('finalhandler');
 const serveStatic = require('serve-static');
 const fs = require('fs-extra');
 const scrape = require('website-scraper');
-const PuppeteerPlugin = require('../index');
+const PuppeteerPlugin = require('../lib');
 
 const directory = __dirname + '/tmp';
 const SERVE_WEBSITE_PORT = 4567;
