@@ -3,7 +3,7 @@
   "version": "0.1.4",
   "description": "Plugin for website-scraper which returns html for dynamic websites using puppeteer",
   "readmeFilename": "README.md",
-  "main": "index.js",
+  "main": "lib/index.js",
   "keywords": [
     "website-scraper",
     "puppeteer",
@@ -13,6 +13,7 @@
     "html"
   ],
   "dependencies": {
+    "debug": "^4.1.1",
     "puppeteer": "^2.0.0"
   },
   "peerDependencies": {
@@ -40,6 +41,6 @@
   },
   "homepage": "https://github.com/website-scraper/website-scraper-puppeteer#readme",
   "files": [
-    "index.js"
+    "lib"
   ]
 }

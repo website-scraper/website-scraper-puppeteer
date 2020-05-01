@@ -32,9 +32,10 @@ scrape({
 ```
 Puppeteer plugin constructor accepts next params:
 * `launchOptions` - *(optional)* - puppeteer launch options, can be found in [puppeteer docs](https://github.com/GoogleChrome/puppeteer/blob/v1.20.0/docs/api.md#puppeteerlaunchoptions)
-* `scrollToBottom` - *(optional)* - in some cases, the page needs to be scrolled down to render its assets (lazyloading). Because some pages can be really endless, the scrolldown process can be interrupted before reaching the bottom when one or both of the bellow limitations are reached :
+* `scrollToBottom` - *(optional)* - in some cases, the page needs to be scrolled down to render its assets (lazyloading). Because some pages can be really endless, the scrolldown process can be interrupted before reaching the bottom when one or both of the bellow limitations are reached:
     * `timeout` - in milliseconds
     * `viewportN` - viewport height multiplier
+* `blockNavigation` - *(optional)* - defines whether navigation away from the page is permitted or not. If it is set to true, then the page is locked to the current url and redirects with `location.replace(anotherPage)` will not pass. Defaults to `false`
 
 ## How it works
 It starts Chromium in headless mode which just opens page and waits until page is loaded.
