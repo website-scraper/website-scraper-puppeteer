@@ -1,6 +1,6 @@
 {
   "name": "website-scraper-puppeteer",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Plugin for website-scraper which returns html for dynamic websites using puppeteer",
   "readmeFilename": "README.md",
   "main": "lib/index.js",
