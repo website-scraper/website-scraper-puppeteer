@@ -3,10 +3,12 @@ const puppeteer = require('puppeteer');
 class PuppeteerPlugin {
 	constructor({
 		launchOptions = {},
-		scrollToBottom = null
+		scrollToBottom = null,
+		blockNavigation = false
 	} = {}) {
 		this.launchOptions = launchOptions;
 		this.scrollToBottom = scrollToBottom;
+		this.blockNavigation = blockNavigation;
 		this.browser = null;
 		this.headers = {};
 	}
@@ -33,6 +35,11 @@ class PuppeteerPlugin {
 				if (hasValues(this.headers)) {
 					await page.setExtraHTTPHeaders(this.headers);
 				}
+
+				if (this.blockNavigation) {
+					await blockNavigation(page, url);
+				}
+
 				await page.goto(url);
 
 				if(this.scrollToBottom) {
@@ -72,6 +79,17 @@ async function scrollToBottom(page, timeout, viewportN) {
 			}, 200);
 		});
 	}, timeout, viewportN);
+}
+
+async function blockNavigation(page, url) {
+	page.on('request', req => {
+		if (req.isNavigationRequest() && req.frame() === page.mainFrame() && req.url() !== url) {
+			req.abort('aborted');
+		} else {
+			req.continue();
+		}
+	});
+	await page.setRequestInterception(true);
 }
 
 module.exports = PuppeteerPlugin;
