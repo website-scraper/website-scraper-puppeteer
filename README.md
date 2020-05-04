@@ -25,7 +25,8 @@ scrape({
     plugins: [ 
       new PuppeteerPlugin({
         launchOptions: { headless: false }, /* optional */
-        scrollToBottom: { timeout: 10000, viewportN: 10 } /* optional */
+        scrollToBottom: { timeout: 10000, viewportN: 10 }, /* optional */
+        blockNavigation: true, /* optional */
       })
     ]
 });
