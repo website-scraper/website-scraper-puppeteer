@@ -3,7 +3,9 @@
 [![Build Status](https://travis-ci.org/website-scraper/website-scraper-puppeteer.svg?branch=master)](https://travis-ci.org/website-scraper/website-scraper-puppeteer)
 
 # website-scraper-puppeteer
-Plugin for [website-scraper](https://github.com/website-scraper/node-website-scraper) which returns html for dynamic websites using [puppeteer](https://github.com/GoogleChrome/puppeteer)
+Plugin for [website-scraper](https://github.com/website-scraper/node-website-scraper) which returns html for dynamic websites using [puppeteer](https://github.com/GoogleChrome/puppeteer).
+
+This module is an Open Source Software maintained by one developer in free time. If you want to thank the author of this module you can use [Patreon](https://www.patreon.com/s0ph1e).
 
 ## Requirements
 * nodejs version >= 8
