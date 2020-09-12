@@ -1,7 +1,7 @@
 {
-  "name": "website-scraper-puppeteer",
+  "name": "website-scraper-puppeteer-lambda",
   "version": "0.1.5",
-  "description": "Plugin for website-scraper which returns html for dynamic websites using puppeteer",
+  "description": "Plugin for website-scraper which returns html for dynamic websites using puppeteer for lambda",
   "readmeFilename": "README.md",
   "main": "lib/index.js",
   "keywords": [
@@ -13,8 +13,7 @@
     "html"
   ],
   "dependencies": {
-    "debug": "^4.1.1",
-    "puppeteer": "^2.0.0"
+    "debug": "^4.1.1"
   },
   "peerDependencies": {
     "website-scraper": "^4.0.0"
@@ -35,6 +34,9 @@
     "url": "git+https://github.com/website-scraper/website-scraper-puppeteer.git"
   },
   "author": "Sophia Antipenko <sophia@antipenko.pp.ua>",
+  "contributors": [
+    { "name": "Diego Machado", "email": "ds-m@live.com"}
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/website-scraper/website-scraper-puppeteer/issues"
