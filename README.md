@@ -1,11 +1,11 @@
 [![Version](https://img.shields.io/npm/v/website-scraper-puppeteer.svg?style=flat)](https://www.npmjs.org/package/website-scraper-puppeteer)
 [![Downloads](https://img.shields.io/npm/dm/website-scraper-puppeteer.svg?style=flat)](https://www.npmjs.org/package/website-scraper-puppeteer)
-[![Build Status](https://travis-ci.org/website-scraper/website-scraper-puppeteer.svg?branch=master)](https://travis-ci.org/website-scraper/website-scraper-puppeteer)
+[![Build Status](https://travis-ci.com/website-scraper/website-scraper-puppeteer.svg?branch=master)](https://travis-ci.com/github/website-scraper/website-scraper-puppeteer)
 
 # website-scraper-puppeteer
-Plugin for [website-scraper](https://github.com/website-scraper/node-website-scraper) which returns html for dynamic websites using [puppeteer](https://github.com/GoogleChrome/puppeteer).
+Plugin for [website-scraper](https://github.com/website-scraper/node-website-scraper) which returns html for dynamic websites using [puppeteer](https://github.com/puppeteer/puppeteer).
 
-This module is an Open Source Software maintained by one developer in free time. If you want to thank the author of this module you can use [Patreon](https://www.patreon.com/s0ph1e).
+This module is an Open Source Software maintained by one developer in free time. If you want to thank the author of this module you can use [GitHub Sponsors](https://github.com/sponsors/s0ph1e) or [Patreon](https://www.patreon.com/s0ph1e).
 
 ## Requirements
 * nodejs version >= 8
@@ -34,7 +34,7 @@ scrape({
 });
 ```
 Puppeteer plugin constructor accepts next params:
-* `launchOptions` - *(optional)* - puppeteer launch options, can be found in [puppeteer docs](https://github.com/GoogleChrome/puppeteer/blob/v1.20.0/docs/api.md#puppeteerlaunchoptions)
+* `launchOptions` - *(optional)* - puppeteer launch options, can be found in [puppeteer docs](https://github.com/puppeteer/puppeteer/blob/v1.20.0/docs/api.md#puppeteerlaunchoptions)
 * `scrollToBottom` - *(optional)* - in some cases, the page needs to be scrolled down to render its assets (lazyloading). Because some pages can be really endless, the scrolldown process can be interrupted before reaching the bottom when one or both of the bellow limitations are reached:
     * `timeout` - in milliseconds
     * `viewportN` - viewport height multiplier
