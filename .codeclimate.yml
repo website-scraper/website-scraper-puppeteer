@@ -14,3 +14,4 @@ ratings:
     - "**.js"
 exclude_paths:
   - test/
+  - lib/browserUtils/

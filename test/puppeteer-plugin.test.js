@@ -20,7 +20,9 @@ describe('Puppeteer plugin test', () => {
 			result = await scrape({
 				urls: [`http://localhost:${SERVE_WEBSITE_PORT}`],
 				directory: directory,
-				plugins: [ new PuppeteerPlugin() ]
+				plugins: [ new PuppeteerPlugin({
+					scrollToBottom: { timeout: 50, viewportN: 10 }
+				}) ]
 			});
 		});
 		before('get content from file', () => {
