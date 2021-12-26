@@ -20,7 +20,9 @@
     "website-scraper": "^4.0.0"
   },
   "devDependencies": {
+    "c8": "^7.10.0",
     "chai": "^4.2.0",
+    "eslint": "^8.5.0",
     "finalhandler": "^1.1.2",
     "fs-extra": "^7.0.1",
     "mocha": "^5.2.0",
@@ -28,7 +30,8 @@
     "website-scraper": "^4.0.0"
   },
   "scripts": {
-    "test": "mocha --timeout 10000 --exit"
+    "test": "c8 --all --reporter=text --reporter=lcov mocha --recursive --timeout 10000",
+    "eslint": "eslint lib/**"
   },
   "repository": {
     "type": "git",
@@ -42,5 +45,8 @@
   "homepage": "https://github.com/website-scraper/website-scraper-puppeteer#readme",
   "files": [
     "lib"
-  ]
+  ],
+  "engines": {
+    "node": ">=14"
+  }
 }
