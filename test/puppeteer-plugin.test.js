@@ -10,9 +10,10 @@ const directory = __dirname + '/tmp';
 const SERVE_WEBSITE_PORT = 4567;
 
 describe('Puppeteer plugin test', () => {
-	let result, content;
+	let result, content, server;
 
-	before('serve website', () => serveWebsite(SERVE_WEBSITE_PORT));
+	before('start webserver', () => server = startWebserver(SERVE_WEBSITE_PORT));
+	after('stop webserver', () => server.close())
 
 	describe('Dynamic content', () => {
 		before('scrape website', async () => {
@@ -65,10 +66,11 @@ describe('Puppeteer plugin test', () => {
 
 });
 
-function serveWebsite(port = 3000) {
+function startWebserver(port = 3000) {
 	const serve = serveStatic(__dirname + '/mock', {'index': ['index.html']});
 	const server = http.createServer(function onRequest (req, res) {
 		serve(req, res, finalhandler(req, res))
 	});
-	server.listen(port)
+
+	return server.listen(port)
 }
