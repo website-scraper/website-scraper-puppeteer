@@ -22,6 +22,7 @@
   "devDependencies": {
     "c8": "^7.10.0",
     "chai": "^4.2.0",
+    "eslint": "^8.5.0",
     "finalhandler": "^1.1.2",
     "fs-extra": "^7.0.1",
     "mocha": "^5.2.0",
@@ -30,7 +31,7 @@
   },
   "scripts": {
     "test": "c8 --all --reporter=text --reporter=lcov mocha --recursive --timeout 10000",
-    "eslint": "eslint lib/** index.js"
+    "eslint": "eslint lib/**"
   },
   "repository": {
     "type": "git",
