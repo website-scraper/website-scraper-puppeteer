@@ -12,7 +12,12 @@
 <script>
 	window.onload = function() {
 		document.getElementById('root').innerText = 'Hello world from JS!';
-		document.getElementById('special-characters-test').innerText = '저는 7년 동안 한국에서 살았어요. Слава Україні!';
+		/**
+		 * TODO: Original innerText "저는 7년 동안 한국에서 살았어요. Слава Україні!" was changed due to issues
+		 * with cheerio and website-scraper itself.
+		 * See https://github.com/cheeriojs/cheerio/pull/2280
+		 */
+		document.getElementById('special-characters-test').innerText = '7년 동안 한국에서 살았어요. Слава Україні!';
 	};
 </script>
 
