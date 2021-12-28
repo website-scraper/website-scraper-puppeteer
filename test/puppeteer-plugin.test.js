@@ -1,12 +1,14 @@
-const { expect } = require('chai');
-const http = require('http');
-const finalhandler = require('finalhandler');
-const serveStatic = require('serve-static');
-const fs = require('fs-extra');
-const scrape = require('website-scraper');
-const PuppeteerPlugin = require('../lib');
+import chai from 'chai';
+import http from 'http';
+import finalhandler from 'finalhandler';
+import serveStatic from 'serve-static';
+import fs from 'fs-extra';
+import scrape from 'website-scraper';
+import PuppeteerPlugin from '../lib/index.js';
 
-const directory = __dirname + '/tmp';
+const { expect } = chai;
+
+const directory = './test/tmp';
 const SERVE_WEBSITE_PORT = 4567;
 
 describe('Puppeteer plugin test', () => {
@@ -69,7 +71,7 @@ describe('Puppeteer plugin test', () => {
 });
 
 function startWebserver(port = 3000) {
-	const serve = serveStatic(__dirname + '/mock', {'index': ['index.html']});
+	const serve = serveStatic('./test/mock', {'index': ['index.html']});
 	const server = http.createServer(function onRequest (req, res) {
 		serve(req, res, finalhandler(req, res))
 	});
