@@ -20,7 +20,7 @@ npm install website-scraper website-scraper-puppeteer
 ## Usage
 ```javascript
 import scrape from 'website-scraper';
-import PuppeteerPlugin from ''website-scraper-puppeteer'';
+import PuppeteerPlugin from 'website-scraper-puppeteer';
 
 await scrape({
     urls: ['https://www.instagram.com/gopro/'],
