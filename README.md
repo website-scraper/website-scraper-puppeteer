@@ -9,8 +9,8 @@ Plugin for [website-scraper](https://github.com/website-scraper/node-website-scr
 This module is an Open Source Software maintained by one developer in free time. If you want to thank the author of this module you can use [GitHub Sponsors](https://github.com/sponsors/s0ph1e) or [Patreon](https://www.patreon.com/s0ph1e).
 
 ## Requirements
-* nodejs version >= 14
-* website-scraper version >= 4
+* nodejs version >= 14.14
+* website-scraper version >= 5
 
 ## Installation
 ```sh
@@ -19,10 +19,10 @@ npm install website-scraper website-scraper-puppeteer
 
 ## Usage
 ```javascript
-const scrape = require('website-scraper');
-const PuppeteerPlugin = require('website-scraper-puppeteer');
+import scrape from 'website-scraper';
+import PuppeteerPlugin from 'website-scraper-puppeteer';
 
-scrape({
+await scrape({
     urls: ['https://www.instagram.com/gopro/'],
     directory: '/path/to/save',
     plugins: [ 
@@ -35,7 +35,7 @@ scrape({
 });
 ```
 Puppeteer plugin constructor accepts next params:
-* `launchOptions` - *(optional)* - puppeteer launch options, can be found in [puppeteer docs](https://github.com/puppeteer/puppeteer/blob/v1.20.0/docs/api.md#puppeteerlaunchoptions)
+* `launchOptions` - *(optional)* - puppeteer launch options, can be found in [puppeteer docs](https://github.com/puppeteer/puppeteer/blob/v13.0.1/docs/api.md#puppeteerlaunchoptions)
 * `scrollToBottom` - *(optional)* - in some cases, the page needs to be scrolled down to render its assets (lazyloading). Because some pages can be really endless, the scrolldown process can be interrupted before reaching the bottom when one or both of the bellow limitations are reached:
     * `timeout` - in milliseconds
     * `viewportN` - viewport height multiplier
