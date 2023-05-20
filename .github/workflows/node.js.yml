@@ -18,7 +18,9 @@ jobs:
         node-version:
           - 14
           - 16
-          - 17
+          - 18
+          - 20
+          - current
         os:
           - ubuntu-latest
           - windows-latest
