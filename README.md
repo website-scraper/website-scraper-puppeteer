@@ -28,7 +28,7 @@ await scrape({
     plugins: [ 
       new PuppeteerPlugin({
         launchOptions: { headless: false }, /* optional */
-        gotoOptions: { waitUntil: "networkIdle0" }, /* optional */
+        gotoOptions: { waitUntil: "networkidle0" }, /* optional */
         scrollToBottom: { timeout: 10000, viewportN: 10 }, /* optional */
         blockNavigation: true, /* optional */
       })
@@ -36,8 +36,8 @@ await scrape({
 });
 ```
 Puppeteer plugin constructor accepts next params:
-* `launchOptions` - *(optional)* - puppeteer launch options, can be found in [puppeteer docs](https://github.com/puppeteer/puppeteer/blob/v13.0.1/docs/api.md#puppeteerlaunchoptions)
-* `gotoOptions` - *(optional)* - puppeteer page.goto options, can be found in [puppeteer docs](https://github.com/puppeteer/puppeteer/blob/v13.0.1/docs/api.md#framegotourl-options)
+* `launchOptions` - *(optional)* - puppeteer launch options, can be found in [puppeteer docs](https://github.com/puppeteer/puppeteer/blob/puppeteer-v20.2.0/docs/api/puppeteer.puppeteerlaunchoptions.md)
+* `gotoOptions` - *(optional)* - puppeteer page.goto options, can be found in [puppeteer docs](https://github.com/puppeteer/puppeteer/blob/puppeteer-v20.2.0/docs/api/puppeteer.frame.goto.md#parameters)
 * `scrollToBottom` - *(optional)* - in some cases, the page needs to be scrolled down to render its assets (lazyloading). Because some pages can be really endless, the scrolldown process can be interrupted before reaching the bottom when one or both of the bellow limitations are reached:
     * `timeout` - in milliseconds
     * `viewportN` - viewport height multiplier
