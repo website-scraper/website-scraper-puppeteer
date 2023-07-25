@@ -18,12 +18,14 @@ jobs:
         node-version:
           - 14
           - 16
-          - 17
+          - 18
+          - 20
+          - current
         os:
           - ubuntu-latest
           - windows-latest
         include:
-          - node-version: 16
+          - node-version: 18
             os: macos-latest
 
     steps:
@@ -35,10 +37,10 @@ jobs:
       - run: npm i
       - run: npm test
       - run: npm run eslint
-        if: ${{ matrix.node-version == '16' && matrix.os == 'ubuntu-latest' }}
+        if: ${{ matrix.node-version == '18' && matrix.os == 'ubuntu-latest' }}
       - name: Publish codeclimate code coverage
-        if: ${{ matrix.node-version == '16' && matrix.os == 'ubuntu-latest' }}
-        uses: paambaati/codeclimate-action@v3.2.0
+        if: ${{ matrix.node-version == '18' && matrix.os == 'ubuntu-latest' }}
+        uses: paambaati/codeclimate-action@v5.0.0
         env:
           CC_TEST_REPORTER_ID: 150be11cde8a18d41d37df6c31823d35892fdd1dbf79c969142c6b3033104e46
         with:

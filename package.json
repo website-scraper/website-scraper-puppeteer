@@ -17,13 +17,13 @@
   ],
   "dependencies": {
     "debug": "^4.1.1",
-    "puppeteer": "^19.2.2"
+    "puppeteer": "20.2.*"
   },
   "peerDependencies": {
     "website-scraper": "^5.0.0"
   },
   "devDependencies": {
-    "c8": "^7.10.0",
+    "c8": "^8.0.0",
     "chai": "^4.2.0",
     "eslint": "^8.5.0",
     "finalhandler": "^1.1.2",
