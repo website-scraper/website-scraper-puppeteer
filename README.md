@@ -9,7 +9,7 @@ Plugin for [website-scraper](https://github.com/website-scraper/node-website-scr
 This module is an Open Source Software maintained by one developer in free time. If you want to thank the author of this module you can use [GitHub Sponsors](https://github.com/sponsors/s0ph1e) or [Patreon](https://www.patreon.com/s0ph1e).
 
 ## Requirements
-* nodejs version >= 14.14
+* nodejs version >= 18
 * website-scraper version >= 5
 
 ## Installation
