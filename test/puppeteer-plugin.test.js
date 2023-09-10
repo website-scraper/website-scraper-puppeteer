@@ -52,6 +52,7 @@ describe('Puppeteer plugin test', () => {
 				directory: directory,
 				plugins: [
 					new PuppeteerPlugin({
+						launchOptions: { headless: "new" },
 						blockNavigation: true
 					})
 				]

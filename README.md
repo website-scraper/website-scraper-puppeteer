@@ -27,7 +27,7 @@ await scrape({
     directory: '/path/to/save',
     plugins: [ 
       new PuppeteerPlugin({
-        launchOptions: { headless: false }, /* optional */
+        launchOptions: { headless: "new" }, /* optional */
         gotoOptions: { waitUntil: "networkidle0" }, /* optional */
         scrollToBottom: { timeout: 10000, viewportN: 10 }, /* optional */
         blockNavigation: true, /* optional */
