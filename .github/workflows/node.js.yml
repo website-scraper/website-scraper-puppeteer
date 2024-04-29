@@ -39,7 +39,7 @@ jobs:
         if: ${{ matrix.node-version == '20' && matrix.os == 'ubuntu-latest' }}
       - name: Publish codeclimate code coverage
         if: ${{ matrix.node-version == '20' && matrix.os == 'ubuntu-latest' }}
-        uses: paambaati/codeclimate-action@v5.0.0
+        uses: paambaati/codeclimate-action@v6.0.0
         env:
           CC_TEST_REPORTER_ID: 150be11cde8a18d41d37df6c31823d35892fdd1dbf79c969142c6b3033104e46
         with:
