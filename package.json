@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "c8": "^9.1.0",
-    "chai": "^4.2.0",
+    "chai": "^5.1.1",
     "eslint": "^8.5.0",
     "finalhandler": "^1.1.2",
     "fs-extra": "^11.1.0",
