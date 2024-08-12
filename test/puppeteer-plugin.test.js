@@ -1,12 +1,10 @@
-import chai from 'chai';
+import { expect } from 'chai';
 import http from 'http';
 import finalhandler from 'finalhandler';
 import serveStatic from 'serve-static';
 import fs from 'fs-extra';
 import scrape from 'website-scraper';
 import PuppeteerPlugin from '../lib/index.js';
-
-const { expect } = chai;
 
 const directory = './test/tmp';
 const SERVE_WEBSITE_PORT = 4567;

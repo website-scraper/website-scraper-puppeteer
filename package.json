@@ -17,14 +17,14 @@
   ],
   "dependencies": {
     "debug": "^4.1.1",
-    "puppeteer": "^22.4.*"
+    "puppeteer": "^23.0.*"
   },
   "peerDependencies": {
     "website-scraper": "^5.0.0"
   },
   "devDependencies": {
-    "c8": "^9.1.0",
-    "chai": "^4.2.0",
+    "c8": "^10.1.2",
+    "chai": "^5.1.1",
     "eslint": "^8.5.0",
     "finalhandler": "^1.1.2",
     "fs-extra": "^11.1.0",
@@ -33,14 +33,14 @@
     "website-scraper": "^5.0.0"
   },
   "scripts": {
-    "test": "c8 --all --reporter=text --reporter=lcov mocha --recursive --timeout 10000",
+    "test": "c8 --all --reporter=text --reporter=lcov mocha --recursive --timeout 15000",
     "eslint": "eslint lib/**"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/website-scraper/website-scraper-puppeteer.git"
   },
-  "author": "Sofiia Antypenko <sophia@antipenko.pp.ua>",
+  "author": "Sofiia Antypenko <sofiia@antypenko.pp.ua>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/website-scraper/website-scraper-puppeteer/issues"
