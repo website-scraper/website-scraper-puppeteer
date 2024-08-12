@@ -17,7 +17,7 @@
   ],
   "dependencies": {
     "debug": "^4.1.1",
-    "puppeteer": "^22.4.*"
+    "puppeteer": "^23.0.*"
   },
   "peerDependencies": {
     "website-scraper": "^5.0.0"
