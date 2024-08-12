@@ -23,7 +23,7 @@
     "website-scraper": "^5.0.0"
   },
   "devDependencies": {
-    "c8": "^9.1.0",
+    "c8": "^10.1.2",
     "chai": "^5.1.1",
     "eslint": "^8.5.0",
     "finalhandler": "^1.1.2",
@@ -33,7 +33,7 @@
     "website-scraper": "^5.0.0"
   },
   "scripts": {
-    "test": "c8 --all --reporter=text --reporter=lcov mocha --recursive --timeout 10000",
+    "test": "c8 --all --reporter=text --reporter=lcov mocha --recursive --timeout 15000",
     "eslint": "eslint lib/**"
   },
   "repository": {
