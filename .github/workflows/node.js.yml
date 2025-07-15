@@ -41,11 +41,9 @@ jobs:
       - run: npm test
       - run: npm run eslint
         if: ${{ matrix.node-version == '22' && matrix.os == 'ubuntu-latest' }}
-      - name: Publish codeclimate code coverage
+      - name: Publish Qlty code coverage
         if: ${{ matrix.node-version == '22' && matrix.os == 'ubuntu-latest' }}
-        uses: paambaati/codeclimate-action@v9.0.0
-        env:
-          CC_TEST_REPORTER_ID: 150be11cde8a18d41d37df6c31823d35892fdd1dbf79c969142c6b3033104e46
+        uses: qltysh/qlty-action/coverage@v1
         with:
-          coverageLocations: |
-            ${{github.workspace}}/coverage/lcov.info:lcov
+          token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
+          files: coverage/lcov.info
