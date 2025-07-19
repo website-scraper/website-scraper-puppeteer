@@ -17,7 +17,7 @@
   ],
   "dependencies": {
     "debug": "^4.1.1",
-    "website-scraper-puppeteer-version-bridge": "github:website-scraper/website-scraper-puppeteer-version-bridge#add-export"
+    "@website-scraper/puppeteer-version-wrapper": "github:website-scraper/puppeteer-version-wrapper#main"
   },
   "peerDependencies": {
     "website-scraper": "^5.0.0"
