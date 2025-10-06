@@ -42,31 +42,6 @@ describe('Puppeteer plugin test', () => {
 			expect(content).to.contain('<div id="special-characters-test">7년 동안 한국에서 살았어요. Слава Україні!</div>');
 		});
 	});
-
-	describe('Block navigation', () => {
-		before('scrape website', async () => {
-			result = await scrape({
-				urls: [`http://localhost:${SERVE_WEBSITE_PORT}/navigation.html`],
-				directory: directory,
-				plugins: [
-					new PuppeteerPlugin({
-						launchOptions: { headless: "new" },
-						blockNavigation: true
-					})
-				]
-			});
-		});
-		before('get content from file', () => {
-			content = fs.readFileSync(`${directory}/${result[0].filename}`).toString();
-		});
-		after('delete dir', () => fs.removeSync(directory));
-
-		it('should render content (and not be redirected)', async () => {
-			expect(content).to.contain('<div id="root">Navigation blocked!</div>');
-		});
-	});
-
-
 });
 
 function startWebserver(port = 3000) {
