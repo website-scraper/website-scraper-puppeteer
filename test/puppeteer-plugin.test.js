@@ -39,7 +39,7 @@ describe('Puppeteer plugin test', () => {
 		});
 
 		it('should render special characters correctly', async () => {
-			expect(content).to.contain('<div id="special-characters-test">7년 동안 한국에서 살았어요. Слава Україні!</div>');
+			expect(content).to.contain('<div id="special-characters-test">7년 동안 한국에서 살았어요. Слава Україні! 磁致伸缩位移传感器 影响大跨度桥梁施工控制的因素</div>');
 		});
 	});
 
