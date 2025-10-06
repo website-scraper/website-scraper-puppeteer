@@ -30,7 +30,6 @@ await scrape({
         launchOptions: { headless: "new" }, /* optional */
         gotoOptions: { waitUntil: "networkidle0" }, /* optional */
         scrollToBottom: { timeout: 10000, viewportN: 10 }, /* optional */
-        blockNavigation: true, /* optional */
       })
     ]
 });
@@ -41,7 +40,6 @@ Puppeteer plugin constructor accepts next params:
 * `scrollToBottom` - *(optional)* - in some cases, the page needs to be scrolled down to render its assets (lazyloading). Because some pages can be really endless, the scrolldown process can be interrupted before reaching the bottom when one or both of the bellow limitations are reached:
     * `timeout` - in milliseconds
     * `viewportN` - viewport height multiplier
-* `blockNavigation` - *(optional)* - defines whether navigation away from the page is permitted or not. If it is set to true, then the page is locked to the current url and redirects with `location.replace(anotherPage)` will not pass. Defaults to `false`
 
 ## How it works
 It starts Chromium in headless mode which just opens page and waits until page is loaded.
