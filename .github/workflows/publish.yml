@@ -64,6 +64,9 @@ jobs:
       - name: Verifying provenance attestations
         run: npm audit signatures
 
+      - name: Disable AppArmor
+        run: echo 0 | sudo tee /proc/sys/kernel/apparmor_restrict_unprivileged_userns
+
       - name: Run tests
         run: npm test
 
