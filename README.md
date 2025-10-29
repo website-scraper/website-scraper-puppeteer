@@ -6,7 +6,11 @@
 # website-scraper-puppeteer
 Plugin for [website-scraper](https://github.com/website-scraper/node-website-scraper) which returns html for dynamic websites using [puppeteer](https://github.com/puppeteer/puppeteer).
 
-This module is an Open Source Software maintained by one developer in free time. If you want to thank the author of this module you can use [GitHub Sponsors](https://github.com/sponsors/s0ph1e) or [Patreon](https://www.patreon.com/s0ph1e).
+## Sponsors
+Maintenance of this project is made possible by all the [contributors](https://github.com/website-scraper/website-scraper-puppeteer/graphs/contributors) and [sponsors](https://github.com/sponsors/s0ph1e).
+If you'd like to sponsor this project and have your avatar or company logo appear below [click here](https://github.com/sponsors/s0ph1e). 💖
+
+<!-- sponsors --><!-- sponsors -->
 
 ## Requirements
 * nodejs version >= 20
