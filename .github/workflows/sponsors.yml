@@ -11,9 +11,12 @@ jobs:
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v5
+        with:
+          # Required to allow push to master without the checks/PR
+          token: ${{ secrets.GH_PUSH_TOKEN }}
 
       - name: Generate Sponsors 💖
-        uses: JamesIves/github-sponsors-readme-action@v1.5.6
+        uses: JamesIves/github-sponsors-readme-action@1a120c92d5067dafeaedb33916301fd61338883d # v1.5.6
         with:
           token: ${{ secrets.SOFIIA_SPONSORS_READ_TOKEN }}
           file: 'README.md'
