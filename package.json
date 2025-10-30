@@ -20,7 +20,7 @@
     "@website-scraper/puppeteer-version-wrapper": "^1.0.0"
   },
   "peerDependencies": {
-    "website-scraper": "^5.0.0"
+    "website-scraper": "^6.0.0"
   },
   "devDependencies": {
     "c8": "^10.1.2",
@@ -30,7 +30,7 @@
     "fs-extra": "^11.1.0",
     "mocha": "^11.0.1",
     "serve-static": "^2.2.0",
-    "website-scraper": "^5.0.0"
+    "website-scraper": "^6.0.0"
   },
   "scripts": {
     "test": "c8 --all --reporter=text --reporter=lcov mocha --recursive --timeout 15000",
