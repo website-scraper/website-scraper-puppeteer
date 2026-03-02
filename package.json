@@ -23,7 +23,7 @@
     "website-scraper": "^6.0.0"
   },
   "devDependencies": {
-    "c8": "^10.1.2",
+    "c8": "^11.0.0",
     "chai": "^6.0.1",
     "eslint": "^8.5.0",
     "finalhandler": "^2.1.0",
