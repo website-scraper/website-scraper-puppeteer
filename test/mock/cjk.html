@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>CJK test</title>
+</head>
+<body>
+
+<div id="cjk-characters-test"></div>
+
+<script>
+	// Reproduces https://github.com/website-scraper/website-scraper-puppeteer/pull/103
+	// Like the reported page, utf-8 is declared only via the http-equiv <meta>
+	// tag (not the Content-Type header). puppeteer still decodes it correctly,
+	// but saving page.content() as a binary string corrupts the CJK characters
+	// on disk, e.g. `磁致伸缩位移传感器` becomes `磁致伸缩位移�&nbsp;感器`.
+	window.onload = function() {
+		document.getElementById('cjk-characters-test').innerText = '磁致伸缩位移传感器 影响大跨度桥梁施工控制的因素';
+	};
+</script>
+
+</body>
+</html>
