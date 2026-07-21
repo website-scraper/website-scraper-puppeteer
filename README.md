@@ -21,6 +21,22 @@ If you'd like to sponsor this project and have your avatar or company logo appea
 npm install website-scraper website-scraper-puppeteer
 ```
 
+### Installing Chrome
+
+Puppeteer normally downloads a compatible version of Chrome automatically during installation via a `postinstall` script. Starting with **npm v12**, lifecycle scripts (including `postinstall`) are disabled by default, so this automatic download no longer runs. You may then see an error like `Could not find Chrome (ver. ...)` when scraping.
+
+If you use **npm v12 or newer** (or another package manager that blocks install scripts, e.g. recent `pnpm`), install Chrome manually after installing the packages:
+
+```sh
+npx puppeteer browsers install chrome
+```
+
+Alternatives:
+* Re-enable install scripts by adding `puppeteer` to the [`allowScripts`](https://docs.npmjs.com/cli/v12/using-npm/config#allow-scripts) field in your `package.json` (or `.npmrc`), so the browser is downloaded automatically again.
+* Use a Chrome/Chromium already installed on your system by pointing Puppeteer to it via `launchOptions.executablePath` (or the `PUPPETEER_EXECUTABLE_PATH` environment variable).
+
+See Puppeteer's guide on [why automatic downloads can be blocked](https://pptr.dev/guides/installation#automatic-downloads-can-be-blocked) for more details.
+
 ## Usage
 ```javascript
 import scrape from 'website-scraper';
