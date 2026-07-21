@@ -45,8 +45,11 @@ jobs:
         with:
           # Required to allow push to master without the checks/PR
           token: ${{ secrets.GH_PUSH_TOKEN }}
+          # Credentials must persist so the later "git push" step can authenticate
+          persist-credentials: true
 
       - name: Set up Node.js
+        # zizmor: ignore[cache-poisoning] - caching is not enabled (no `cache` input), so no cache is restored into this release build
         uses: actions/setup-node@v7
         with:
           node-version: '24'
@@ -73,11 +76,12 @@ jobs:
       - name: Bump version and create tag
         id: bump-version
         env:
+          BUMP: ${{ github.event.inputs.bump }}
           PREID_FLAG: ${{ startsWith(inputs.bump, 'pre') && inputs.preid && format('--preid {0}', inputs.preid) || '' }}
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          TAG=$(npm version ${{ github.event.inputs.bump }} $PREID_FLAG -m "Release %s")
+          TAG=$(npm version "$BUMP" $PREID_FLAG -m "Release %s")
           echo "Created tag: $TAG"
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
 
