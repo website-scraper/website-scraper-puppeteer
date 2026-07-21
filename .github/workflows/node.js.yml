@@ -9,6 +9,9 @@ on:
     - cron: '17 2 * * *'
   workflow_dispatch: ~
 
+permissions:
+  contents: read
+
 jobs:
   test:
     timeout-minutes: 10
@@ -35,6 +38,9 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Update npm to latest
+        # npm@latest (v12+) dropped support for Node 20, so only upgrade on
+        # newer Node versions; Node 20 keeps its bundled npm.
+        if: ${{ matrix.node-version != 20 }}
         run: npm install -g npm@latest
       - run: npm i
       - name: Install Chrome for Puppeteer
