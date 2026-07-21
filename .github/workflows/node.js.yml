@@ -34,7 +34,13 @@ jobs:
         uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node-version }}
+      - name: Update npm to latest
+        run: npm install -g npm@latest
       - run: npm i
+      - name: Install Chrome for Puppeteer
+        # npm v12 disables install scripts by default, so Puppeteer's
+        # postinstall no longer downloads Chrome automatically.
+        run: npx puppeteer browsers install chrome
       - name: Disable AppArmor
         if: ${{ matrix.os == 'ubuntu-latest' }}
         run: echo 0 | sudo tee /proc/sys/kernel/apparmor_restrict_unprivileged_userns
