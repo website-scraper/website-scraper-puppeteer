@@ -84,6 +84,12 @@ describe('Puppeteer plugin test', () => {
 		it('should stay logged in on subsequent pages', () => {
 			expect(files.page2).to.contain('LOGGED-IN');
 		});
+
+		it('should use the rotated cookie for subsequent website-scraper requests', () => {
+			const scraperRequests = sessionServer.requestLog.filter(request => request.url === '/page2.html' && !request.fromBrowser);
+			expect(scraperRequests).to.have.lengthOf(1);
+			expect(scraperRequests[0].cookie).to.eql('session=token-2');
+		});
 	});
 
 	describe('CJK content with charset only in meta tag', () => {
@@ -117,10 +123,18 @@ function startSessionRotatingWebserver (port) {
 	const validTokens = new Set(['token-1']);
 	const seenTokens = new Set(['token-1']);
 	let tokenCounter = 1;
+	const requestLog = [];
 
 	const server = http.createServer((req, res) => {
 		const tokenMatch = (req.headers.cookie || '').match(/session=([^;]+)/);
 		const token = tokenMatch ? tokenMatch[1] : null;
+
+		requestLog.push({
+			url: req.url,
+			cookie: req.headers.cookie || null,
+			// requests made by the puppeteer page vs by website-scraper itself
+			fromBrowser: (req.headers['user-agent'] || '').includes('HeadlessChrome')
+		});
 
 		if (token && seenTokens.has(token) && !validTokens.has(token)) {
 			validTokens.clear(); // stale token reuse -> destroy session
@@ -148,6 +162,7 @@ function startSessionRotatingWebserver (port) {
 		</body></html>`);
 	});
 
+	server.requestLog = requestLog;
 	return server.listen(port);
 }
 
