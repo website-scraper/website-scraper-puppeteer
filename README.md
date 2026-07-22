@@ -61,6 +61,21 @@ Puppeteer plugin constructor accepts next params:
     * `timeout` - in milliseconds
     * `viewportN` - viewport height multiplier
 
+## Cookies
+Cookies passed in `request.headers.Cookie` (website-scraper option) are set into the browser's cookie jar, so pages opened in puppeteer send them too.
+The jar is the source of truth afterwards: if the website rotates or refreshes cookies (via `Set-Cookie` or js executed on the page), the updated cookies are used for all subsequent requests.
+
+```javascript
+await scrape({
+    urls: ['https://example.com/'],
+    directory: '/path/to/save',
+    request: {
+        headers: { Cookie: 'session=abc123' }
+    },
+    plugins: [ new PuppeteerPlugin() ]
+});
+```
+
 ## How it works
 It starts Chromium in headless mode which just opens page and waits until page is loaded.
 It is far from ideal because probably you need to wait until some resource is loaded or click some button or log in. Currently this module doesn't support such functionality.
