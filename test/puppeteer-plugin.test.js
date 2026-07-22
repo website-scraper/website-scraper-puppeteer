@@ -113,7 +113,7 @@ describe('Puppeteer plugin test', () => {
 // (like WordPress heartbeat / WooCommerce fragments do). Rotation invalidates
 // the previous token, and presenting a stale token destroys the whole session
 // (like WordPress security plugins do on suspected session hijacking).
-function startSessionRotatingWebserver(port) {
+function startSessionRotatingWebserver (port) {
 	const validTokens = new Set(['token-1']);
 	const seenTokens = new Set(['token-1']);
 	let tokenCounter = 1;
