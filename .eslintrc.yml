@@ -5,6 +5,10 @@ parserOptions:
 env:
   node: true
   es6: true
+overrides:
+  - files: ["test/**"]
+    env:
+      mocha: true
 rules:
   consistent-return: "error"
   curly: "error"
