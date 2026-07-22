@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { parseCookieHeader, parseSetCookieHeader, cookieMatchesUrl, serializeCookies } from '../lib/cookies.js';
+import { parseCookieHeader, parseSetCookieHeader, cookieMatchesUrl, serializeCookies, getCookieHeader, deleteCookieHeader } from '../lib/cookies.js';
 
 describe('Cookies', () => {
 	describe('parseCookieHeader', () => {
@@ -60,32 +60,50 @@ describe('Cookies', () => {
 	});
 
 	describe('cookieMatchesUrl', () => {
+		const matches = (cookie, url) => cookieMatchesUrl(cookie, new URL(url));
+
 		it('should match host-only cookies only on the exact host', () => {
 			const cookie = { name: 'a', value: '1', domain: 'example.com', path: '/' };
-			expect(cookieMatchesUrl(cookie, 'http://example.com/page')).to.eql(true);
-			expect(cookieMatchesUrl(cookie, 'http://sub.example.com/page')).to.eql(false);
-			expect(cookieMatchesUrl(cookie, 'http://other.com/page')).to.eql(false);
+			expect(matches(cookie, 'http://example.com/page')).to.eql(true);
+			expect(matches(cookie, 'http://sub.example.com/page')).to.eql(false);
+			expect(matches(cookie, 'http://other.com/page')).to.eql(false);
 		});
 
 		it('should match domain cookies on subdomains', () => {
 			const cookie = { name: 'a', value: '1', domain: '.example.com', path: '/' };
-			expect(cookieMatchesUrl(cookie, 'http://example.com/')).to.eql(true);
-			expect(cookieMatchesUrl(cookie, 'http://sub.example.com/')).to.eql(true);
-			expect(cookieMatchesUrl(cookie, 'http://badexample.com/')).to.eql(false);
+			expect(matches(cookie, 'http://example.com/')).to.eql(true);
+			expect(matches(cookie, 'http://sub.example.com/')).to.eql(true);
+			expect(matches(cookie, 'http://badexample.com/')).to.eql(false);
 		});
 
 		it('should match paths on segment boundaries', () => {
 			const cookie = { name: 'a', value: '1', domain: 'example.com', path: '/shop' };
-			expect(cookieMatchesUrl(cookie, 'http://example.com/shop')).to.eql(true);
-			expect(cookieMatchesUrl(cookie, 'http://example.com/shop/cart')).to.eql(true);
-			expect(cookieMatchesUrl(cookie, 'http://example.com/shopping')).to.eql(false);
-			expect(cookieMatchesUrl(cookie, 'http://example.com/')).to.eql(false);
+			expect(matches(cookie, 'http://example.com/shop')).to.eql(true);
+			expect(matches(cookie, 'http://example.com/shop/cart')).to.eql(true);
+			expect(matches(cookie, 'http://example.com/shopping')).to.eql(false);
+			expect(matches(cookie, 'http://example.com/')).to.eql(false);
 		});
 
 		it('should not send secure cookies over http', () => {
 			const cookie = { name: 'a', value: '1', domain: 'example.com', path: '/', secure: true };
-			expect(cookieMatchesUrl(cookie, 'http://example.com/')).to.eql(false);
-			expect(cookieMatchesUrl(cookie, 'https://example.com/')).to.eql(true);
+			expect(matches(cookie, 'http://example.com/')).to.eql(false);
+			expect(matches(cookie, 'https://example.com/')).to.eql(true);
+		});
+	});
+
+	describe('getCookieHeader', () => {
+		it('should find the Cookie header case-insensitively', () => {
+			expect(getCookieHeader({ Cookie: 'a=1' })).to.eql('a=1');
+			expect(getCookieHeader({ cookie: 'a=1' })).to.eql('a=1');
+			expect(getCookieHeader({ Accept: 'text/html' })).to.eql(null);
+		});
+	});
+
+	describe('deleteCookieHeader', () => {
+		it('should delete the Cookie header case-insensitively', () => {
+			const headers = { Cookie: 'a=1', cookie: 'b=2', Accept: 'text/html' };
+			deleteCookieHeader(headers);
+			expect(headers).to.eql({ Accept: 'text/html' });
 		});
 	});
 
