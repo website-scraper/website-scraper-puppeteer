@@ -43,6 +43,55 @@ describe('Puppeteer plugin test', () => {
 		});
 	});
 
+	// Regression test for https://github.com/website-scraper/website-scraper-puppeteer/issues/115
+	// The page js rotates the session cookie; the rotated cookie must be used
+	// for subsequent requests instead of the initially configured one.
+	describe('Session cookie rotated by page js', () => {
+		const SESSION_SERVER_PORT = 4568;
+		let sessionServer, files;
+
+		before('start session webserver', () => sessionServer = startSessionRotatingWebserver(SESSION_SERVER_PORT));
+		after('stop session webserver', () => sessionServer.close());
+
+		before('scrape website', async () => {
+			await scrape({
+				urls: [`http://localhost:${SESSION_SERVER_PORT}/`],
+				directory: directory,
+				recursive: true,
+				requestConcurrency: 1,
+				request: {
+					headers: { Cookie: 'session=token-1' }
+				},
+				urlFilter: url => url.startsWith(`http://localhost:${SESSION_SERVER_PORT}`),
+				plugins: [ new PuppeteerPlugin({
+					// wait for the session-rotating fetch() to complete before the page is closed
+					gotoOptions: { waitUntil: 'networkidle0' }
+				}) ]
+			});
+		});
+		before('get content from files', () => {
+			files = {
+				index: fs.readFileSync(`${directory}/index.html`).toString(),
+				page2: fs.readFileSync(`${directory}/page2.html`).toString()
+			};
+		});
+		after('delete dir', () => fs.removeSync(directory));
+
+		it('should stay logged in on the first page', () => {
+			expect(files.index).to.contain('LOGGED-IN');
+		});
+
+		it('should stay logged in on subsequent pages', () => {
+			expect(files.page2).to.contain('LOGGED-IN');
+		});
+
+		it('should use the rotated cookie for subsequent website-scraper requests', () => {
+			const scraperRequests = sessionServer.requestLog.filter(request => request.url === '/page2.html' && !request.fromBrowser);
+			expect(scraperRequests).to.have.lengthOf(1);
+			expect(scraperRequests[0].cookie).to.eql('session=token-2');
+		});
+	});
+
 	describe('CJK content with charset only in meta tag', () => {
 		let cjkResult, cjkContent;
 
@@ -65,6 +114,57 @@ describe('Puppeteer plugin test', () => {
 		});
 	});
 });
+
+// Simulates a website which rotates the session cookie via an ajax call
+// (like WordPress heartbeat / WooCommerce fragments do). Rotation invalidates
+// the previous token, and presenting a stale token destroys the whole session
+// (like WordPress security plugins do on suspected session hijacking).
+function startSessionRotatingWebserver (port) {
+	const validTokens = new Set(['token-1']);
+	const seenTokens = new Set(['token-1']);
+	let tokenCounter = 1;
+	const requestLog = [];
+
+	const server = http.createServer((req, res) => {
+		const tokenMatch = (req.headers.cookie || '').match(/session=([^;]+)/);
+		const token = tokenMatch ? tokenMatch[1] : null;
+
+		requestLog.push({
+			url: req.url,
+			cookie: req.headers.cookie || null,
+			// requests made by the puppeteer page vs by website-scraper itself
+			fromBrowser: (req.headers['user-agent'] || '').includes('HeadlessChrome')
+		});
+
+		if (token && seenTokens.has(token) && !validTokens.has(token)) {
+			validTokens.clear(); // stale token reuse -> destroy session
+		}
+		const loggedIn = token && validTokens.has(token);
+
+		if (req.url === '/refresh') {
+			if (loggedIn) {
+				validTokens.delete(token);
+				const newToken = `token-${++tokenCounter}`;
+				validTokens.add(newToken);
+				seenTokens.add(newToken);
+				res.setHeader('Set-Cookie', `session=${newToken}; Path=/`);
+			}
+			res.setHeader('Content-Type', 'application/json');
+			res.end(JSON.stringify({ ok: loggedIn }));
+			return;
+		}
+
+		res.setHeader('Content-Type', 'text/html');
+		const status = loggedIn ? 'LOGGED-IN' : 'LOGGED-OUT';
+		res.end(`<html><body><h1>${status}</h1>
+			<a href="/page2.html">page2</a>
+			<script>fetch('/refresh');</script>
+		</body></html>`);
+	});
+
+	server.requestLog = requestLog;
+	return server.listen(port);
+}
 
 function startWebserver(port = 3000) {
 	const serve = serveStatic('./test/mock', {'index': ['index.html']});
