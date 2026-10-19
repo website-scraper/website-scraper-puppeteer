@@ -14,7 +14,7 @@ If you'd like to sponsor this project and have your avatar or company logo appea
 
 ## Requirements
 * nodejs version >= 20
-* website-scraper version >= 5
+* website-scraper version >= 6
 
 ## Installation
 ```sh
@@ -47,7 +47,7 @@ await scrape({
     directory: '/path/to/save',
     plugins: [ 
       new PuppeteerPlugin({
-        launchOptions: { headless: "new" }, /* optional */
+        launchOptions: { headless: true }, /* optional */
         gotoOptions: { waitUntil: "networkidle0" }, /* optional */
         scrollToBottom: { timeout: 10000, viewportN: 10 }, /* optional */
         exclusiveRendering: true, /* optional */
@@ -55,10 +55,10 @@ await scrape({
     ]
 });
 ```
-Puppeteer plugin constructor accepts next params:
-* `launchOptions` - *(optional)* - puppeteer launch options, can be found in [puppeteer docs](https://github.com/puppeteer/puppeteer/blob/main/docs/api/puppeteer.puppeteerlaunchoptions.md)
-* `gotoOptions` - *(optional)* - puppeteer page.goto options, can be found in [puppeteer docs](https://github.com/puppeteer/puppeteer/blob/main/docs/api/puppeteer.frame.goto.md#parameters)
-* `scrollToBottom` - *(optional)* - in some cases, the page needs to be scrolled down to render its assets (lazyloading). Because some pages can be really endless, the scrolldown process can be interrupted before reaching the bottom when one or both of the bellow limitations are reached:
+Puppeteer plugin constructor accepts the following params:
+* `launchOptions` - *(optional)* - puppeteer launch options, can be found in [puppeteer docs](https://pptr.dev/api/puppeteer.launchoptions)
+* `gotoOptions` - *(optional)* - puppeteer page.goto options, can be found in [puppeteer docs](https://pptr.dev/api/puppeteer.gotooptions)
+* `scrollToBottom` - *(optional)* - in some cases, the page needs to be scrolled down to render its assets (lazyloading). Because some pages can be really endless, the scrolldown process can be interrupted before reaching the bottom when one or both of the limitations below are reached:
     * `timeout` - in milliseconds
     * `viewportN` - viewport height multiplier
 * `exclusiveRendering` - *(optional, default `true`)* - render pages one at a time and never while other requests are in flight, so cookies rotated by a page (see [Cookies](#cookies)) are never presented stale. Set to `false` for websites which don't rotate cookies: pages are then rendered concurrently, which is considerably faster on large websites.
