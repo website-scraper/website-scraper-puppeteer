@@ -92,6 +92,47 @@ describe('Puppeteer plugin test', () => {
 		});
 	});
 
+	// got follows redirects internally, so cookies set on intermediate hops
+	// are only visible through the cookie jar - not in the final response.
+	describe('Cookie set on a redirect hop', () => {
+		const REDIRECT_SERVER_PORT = 4569;
+		let redirectServer, homeContent;
+
+		before('start redirecting webserver', () => redirectServer = startRedirectingWebserver(REDIRECT_SERVER_PORT));
+		after('stop redirecting webserver', () => redirectServer.close());
+
+		before('scrape website', async () => {
+			await scrape({
+				urls: [`http://localhost:${REDIRECT_SERVER_PORT}/`],
+				directory: directory,
+				request: {
+					headers: { Cookie: 'session=token-1' }
+				},
+				plugins: [ new PuppeteerPlugin() ]
+			});
+		});
+		before('get content from file', () => {
+			homeContent = fs.readFileSync(`${directory}/index.html`).toString();
+		});
+		after('delete dir', () => fs.removeSync(directory));
+
+		it('should send the configured cookie to the redirecting url', () => {
+			const requests = redirectServer.requestLog.filter(request => request.url === '/' && !request.fromBrowser);
+			expect(requests).to.have.lengthOf(1);
+			expect(requests[0].cookie).to.eql('session=token-1');
+		});
+
+		it('should send the cookie set by the redirect to the redirect target', () => {
+			const requests = redirectServer.requestLog.filter(request => request.url === '/home.html' && !request.fromBrowser);
+			expect(requests).to.have.lengthOf(1);
+			expect(requests[0].cookie).to.eql('session=token-2');
+		});
+
+		it('should render the redirect target in puppeteer with the cookie set by the redirect', () => {
+			expect(homeContent).to.contain('<h1>session=token-2</h1>');
+		});
+	});
+
 	describe('CJK content with charset only in meta tag', () => {
 		let cjkResult, cjkContent;
 
@@ -160,6 +201,32 @@ function startSessionRotatingWebserver (port) {
 			<a href="/page2.html">page2</a>
 			<script>fetch('/refresh');</script>
 		</body></html>`);
+	});
+
+	server.requestLog = requestLog;
+	return server.listen(port);
+}
+
+// Simulates a website which sets a new session cookie while redirecting
+// (like login flows do): GET / -> 302 Location: /home.html + Set-Cookie.
+function startRedirectingWebserver (port) {
+	const requestLog = [];
+
+	const server = http.createServer((req, res) => {
+		requestLog.push({
+			url: req.url,
+			cookie: req.headers.cookie || null,
+			fromBrowser: (req.headers['user-agent'] || '').includes('HeadlessChrome')
+		});
+
+		if (req.url === '/') {
+			res.writeHead(302, { 'Location': '/home.html', 'Set-Cookie': 'session=token-2; Path=/' });
+			res.end();
+			return;
+		}
+
+		res.setHeader('Content-Type', 'text/html');
+		res.end(`<html><body><h1>${req.headers.cookie || 'no cookie'}</h1></body></html>`);
 	});
 
 	server.requestLog = requestLog;

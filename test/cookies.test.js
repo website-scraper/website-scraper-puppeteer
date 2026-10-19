@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { parseCookieHeader, parseSetCookieHeader, cookieMatchesUrl, serializeCookies, getCookieHeader, deleteCookieHeader } from '../lib/cookies.js';
+import { parseCookieHeader, parseSetCookieHeader, cookieMatchesUrl, serializeCookies, createBrowserCookieJar, getCookieHeader, deleteCookieHeader } from '../lib/cookies.js';
 
 describe('Cookies', () => {
 	describe('parseCookieHeader', () => {
@@ -111,6 +111,38 @@ describe('Cookies', () => {
 		it('should serialize cookies into a Cookie header value', () => {
 			const cookies = [{ name: 'a', value: '1' }, { name: 'b', value: '2' }];
 			expect(serializeCookies(cookies)).to.eql('a=1; b=2');
+		});
+	});
+
+	describe('createBrowserCookieJar', () => {
+		const fakeBrowser = (cookies) => ({
+			cookies: async () => cookies,
+			setCookie: async (...newCookies) => cookies.push(...newCookies)
+		});
+
+		it('should serialize only the cookies which match the url', async () => {
+			const jar = createBrowserCookieJar(fakeBrowser([
+				{ name: 'a', value: '1', domain: 'example.com', path: '/' },
+				{ name: 'b', value: '2', domain: 'other.com', path: '/' },
+				{ name: 'c', value: '3', domain: 'example.com', path: '/', secure: true }
+			]));
+			expect(await jar.getCookieString('http://example.com/page')).to.eql('a=1');
+			expect(await jar.getCookieString('https://example.com/page')).to.eql('a=1; c=3');
+			expect(await jar.getCookieString('http://unknown.com/')).to.eql('');
+		});
+
+		it('should store Set-Cookie headers into the browser', async () => {
+			const stored = [];
+			const jar = createBrowserCookieJar(fakeBrowser(stored));
+			await jar.setCookie('session=xyz; Path=/', 'https://example.com/page');
+			expect(stored).to.eql([{ name: 'session', value: 'xyz', domain: 'example.com', path: '/' }]);
+		});
+
+		it('should ignore malformed Set-Cookie headers', async () => {
+			const stored = [];
+			const jar = createBrowserCookieJar(fakeBrowser(stored));
+			await jar.setCookie('malformed', 'https://example.com/');
+			expect(stored).to.eql([]);
 		});
 	});
 });
