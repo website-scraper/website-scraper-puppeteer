@@ -100,6 +100,14 @@ describe('Cookies', () => {
 			expect(matches(cookie, 'http://example.com/')).to.eql(false);
 			expect(matches(cookie, 'https://example.com/')).to.eql(true);
 		});
+
+		it('should send secure cookies to localhost over http, like Chrome does', () => {
+			const secure = domain => ({ name: 'a', value: '1', domain, path: '/', secure: true });
+			expect(matches(secure('localhost'), 'http://localhost:3000/')).to.eql(true);
+			expect(matches(secure('.localhost'), 'http://app.localhost/')).to.eql(true);
+			expect(matches(secure('127.0.0.1'), 'http://127.0.0.1/')).to.eql(true);
+			expect(matches(secure('[::1]'), 'http://[::1]/')).to.eql(true);
+		});
 	});
 
 	describe('getCookieHeader', () => {
