@@ -64,6 +64,7 @@ Puppeteer plugin constructor accepts next params:
 ## Cookies
 Cookies passed in `request.headers.Cookie` (website-scraper option) are set into the browser's cookie jar for the scraped urls' hosts (including their subdomains), so pages opened in puppeteer send them too — but they are not leaked to other domains.
 The jar is the source of truth afterwards: if the website rotates or refreshes cookies (via `Set-Cookie`, including on redirects, or js executed on the page), the updated cookies are used for all subsequent requests.
+To keep rotated cookies consistent, pages are rendered one at a time and never while other requests are in flight, regardless of `requestConcurrency`.
 
 ```javascript
 await scrape({

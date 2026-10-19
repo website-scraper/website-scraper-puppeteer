@@ -46,6 +46,8 @@ describe('Puppeteer plugin test', () => {
 	// Regression test for https://github.com/website-scraper/website-scraper-puppeteer/issues/115
 	// The page js rotates the session cookie; the rotated cookie must be used
 	// for subsequent requests instead of the initially configured one.
+	// Runs with the default (unlimited) requestConcurrency: page renders
+	// must not overlap with each other or with in-flight plain requests.
 	describe('Session cookie rotated by page js', () => {
 		const SESSION_SERVER_PORT = 4568;
 		let sessionServer, files;
@@ -58,7 +60,6 @@ describe('Puppeteer plugin test', () => {
 				urls: [`http://localhost:${SESSION_SERVER_PORT}/`],
 				directory: directory,
 				recursive: true,
-				requestConcurrency: 1,
 				request: {
 					headers: { Cookie: 'session=token-1' }
 				},
@@ -70,10 +71,10 @@ describe('Puppeteer plugin test', () => {
 			});
 		});
 		before('get content from files', () => {
-			files = {
-				index: fs.readFileSync(`${directory}/index.html`).toString(),
-				page2: fs.readFileSync(`${directory}/page2.html`).toString()
-			};
+			files = {};
+			for (const name of ['index', 'page2', 'page3', 'page4', 'page5']) {
+				files[name] = fs.readFileSync(`${directory}/${name}.html`).toString();
+			}
 		});
 		after('delete dir', () => fs.removeSync(directory));
 
@@ -82,7 +83,13 @@ describe('Puppeteer plugin test', () => {
 		});
 
 		it('should stay logged in on subsequent pages', () => {
-			expect(files.page2).to.contain('LOGGED-IN');
+			for (const name of ['page2', 'page3', 'page4', 'page5']) {
+				expect(files[name], name).to.contain('LOGGED-IN');
+			}
+		});
+
+		it('should never present a stale token', () => {
+			expect(sessionServer.sessionDestroyed).to.eql(false);
 		});
 
 		it('should use the rotated cookie for subsequent website-scraper requests', () => {
@@ -160,13 +167,33 @@ describe('Puppeteer plugin test', () => {
 // (like WordPress heartbeat / WooCommerce fragments do). Rotation invalidates
 // the previous token, and presenting a stale token destroys the whole session
 // (like WordPress security plugins do on suspected session hijacking).
+// Pages link to each other so that sibling pages get requested concurrently:
+// index -> page2, page3; page2 -> page4; page3 -> page5.
 function startSessionRotatingWebserver (port) {
 	const validTokens = new Set(['token-1']);
 	const seenTokens = new Set(['token-1']);
 	let tokenCounter = 1;
 	const requestLog = [];
+	const links = {
+		'/': ['/page2.html', '/page3.html'],
+		'/page2.html': ['/page4.html'],
+		'/page3.html': ['/page5.html']
+	};
 
 	const server = http.createServer((req, res) => {
+		if (req.url === '/favicon.ico') {
+			// requested by Chrome in parallel with the page's own requests, not session-related
+			res.writeHead(404).end();
+			return;
+		}
+		// Every request takes a while to be processed, so requests sent concurrently
+		// (by a page render or by website-scraper) overlap and a rotation triggered
+		// by one of them lands before the others are validated.
+		setTimeout(() => handle(req, res), 100);
+	});
+
+	function handle (req, res) {
+		const fromBrowser = (req.headers['user-agent'] || '').includes('HeadlessChrome');
 		const tokenMatch = (req.headers.cookie || '').match(/session=([^;]+)/);
 		const token = tokenMatch ? tokenMatch[1] : null;
 
@@ -174,11 +201,12 @@ function startSessionRotatingWebserver (port) {
 			url: req.url,
 			cookie: req.headers.cookie || null,
 			// requests made by the puppeteer page vs by website-scraper itself
-			fromBrowser: (req.headers['user-agent'] || '').includes('HeadlessChrome')
+			fromBrowser
 		});
 
 		if (token && seenTokens.has(token) && !validTokens.has(token)) {
 			validTokens.clear(); // stale token reuse -> destroy session
+			server.sessionDestroyed = true;
 		}
 		const loggedIn = token && validTokens.has(token);
 
@@ -197,13 +225,15 @@ function startSessionRotatingWebserver (port) {
 
 		res.setHeader('Content-Type', 'text/html');
 		const status = loggedIn ? 'LOGGED-IN' : 'LOGGED-OUT';
+		const anchors = (links[req.url] || []).map(href => `<a href="${href}">${href}</a>`).join('');
 		res.end(`<html><body><h1>${status}</h1>
-			<a href="/page2.html">page2</a>
+			${anchors}
 			<script>fetch('/refresh');</script>
 		</body></html>`);
-	});
+	}
 
 	server.requestLog = requestLog;
+	server.sessionDestroyed = false;
 	return server.listen(port);
 }
 
