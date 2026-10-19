@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { parseCookieHeader, parseSetCookieHeader, cookieMatchesUrl, serializeCookies, createBrowserCookieJar, getCookieHeader, deleteCookieHeader } from '../lib/cookies.js';
+import { parseCookieHeader, parseSetCookieHeader, cookieMatchesUrl, serializeCookies, createBrowserCookieJar, ensureLeadingDot, getCookieHeader, deleteCookieHeader } from '../lib/cookies.js';
 
 describe('Cookies', () => {
 	describe('parseCookieHeader', () => {
@@ -107,6 +107,14 @@ describe('Cookies', () => {
 			expect(matches(secure('.localhost'), 'http://app.localhost/')).to.eql(true);
 			expect(matches(secure('127.0.0.1'), 'http://127.0.0.1/')).to.eql(true);
 			expect(matches(secure('[::1]'), 'http://[::1]/')).to.eql(true);
+		});
+	});
+
+	describe('ensureLeadingDot', () => {
+		it('should add a leading dot once', () => {
+			expect(ensureLeadingDot('example.com')).to.eql('.example.com');
+			expect(ensureLeadingDot('.example.com')).to.eql('.example.com');
+			expect(ensureLeadingDot('localhost')).to.eql('.localhost');
 		});
 	});
 
