@@ -172,6 +172,37 @@ describe('Cookies', () => {
 			expect(stored).to.eql([]);
 		});
 
+		it('should read the browser jar once until a cookie is stored or the cache is invalidated', async () => {
+			let reads = 0;
+			const cookies = [{ name: 'a', value: '1', domain: 'example.com', path: '/' }];
+			const jar = createBrowserCookieJar({
+				cookies: async () => { reads++; return cookies; },
+				setCookie: async cookie => cookies.push(cookie)
+			});
+
+			await Promise.all([jar.getCookieString('http://example.com/'), jar.getCookieString('http://example.com/a')]);
+			await jar.getCookieString('http://example.com/b');
+			expect(reads).to.eql(1);
+
+			await jar.setCookie('b=2; Path=/', 'http://example.com/');
+			expect(await jar.getCookieString('http://example.com/')).to.eql('a=1; b=2');
+			expect(reads).to.eql(2);
+
+			jar.invalidate();
+			await jar.getCookieString('http://example.com/');
+			expect(reads).to.eql(3);
+		});
+
+		it('should not cache a failed read of the browser jar', async () => {
+			let fail = true;
+			const jar = createBrowserCookieJar({
+				cookies: async () => { if (fail) throw new Error('browser closed'); return []; }
+			});
+			await jar.getCookieString('http://example.com/').then(() => { throw new Error('should reject'); }, () => {});
+			fail = false;
+			expect(await jar.getCookieString('http://example.com/')).to.eql('');
+		});
+
 		it('should ignore cookies rejected by the browser', async () => {
 			const rejectingBrowser = {
 				cookies: async () => [],
