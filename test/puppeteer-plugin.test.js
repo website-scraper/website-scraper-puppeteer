@@ -138,6 +138,12 @@ describe('Puppeteer plugin test', () => {
 		it('should render the redirect target in puppeteer with the cookie set by the redirect', () => {
 			expect(homeContent).to.contain('<h1>session=token-2</h1>');
 		});
+
+		it('should ignore a cookie rejected by the browser', () => {
+			// the scrape completed (see before hook) despite the __Secure- cookie
+			// sent over http, and the valid cookie was kept
+			expect(homeContent).to.contain('<h1>session=token-2</h1>');
+		});
 	});
 
 	describe('CJK content with charset only in meta tag', () => {
@@ -256,6 +262,8 @@ function startRedirectingWebserver (port) {
 		}
 
 		res.setHeader('Content-Type', 'text/html');
+		// __Secure- prefixed cookies must have the Secure attribute, Chrome rejects this one
+		res.setHeader('Set-Cookie', '__Secure-tracking=1; Path=/');
 		res.end(`<html><body><h1>${req.headers.cookie || 'no cookie'}</h1></body></html>`);
 	});
 

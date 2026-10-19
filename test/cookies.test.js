@@ -144,5 +144,14 @@ describe('Cookies', () => {
 			await jar.setCookie('malformed', 'https://example.com/');
 			expect(stored).to.eql([]);
 		});
+
+		it('should ignore cookies rejected by the browser', async () => {
+			const rejectingBrowser = {
+				cookies: async () => [],
+				setCookie: async () => { throw new Error('Protocol error (Storage.setCookies): Invalid cookie fields'); }
+			};
+			const jar = createBrowserCookieJar(rejectingBrowser);
+			await jar.setCookie('__Secure-a=1', 'http://example.com/');
+		});
 	});
 });
