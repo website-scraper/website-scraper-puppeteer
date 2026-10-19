@@ -204,7 +204,12 @@ describe('Cookies', () => {
 		it('should not cache a failed read of the browser jar', async () => {
 			let fail = true;
 			const jar = createBrowserCookieJar({
-				cookies: async () => { if (fail) throw new Error('browser closed'); return []; }
+				cookies: async () => {
+					if (fail) {
+						throw new Error('browser closed');
+					}
+					return [];
+				}
 			});
 			await jar.getCookieString('http://example.com/').then(() => { throw new Error('should reject'); }, () => {});
 			fail = false;
