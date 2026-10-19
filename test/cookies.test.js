@@ -57,6 +57,17 @@ describe('Cookies', () => {
 			expect(parseSetCookieHeader('malformed', url)).to.eql(null);
 			expect(parseSetCookieHeader('=nameless', url)).to.eql(null);
 		});
+
+		it('should accept a Domain covering the request host', () => {
+			expect(parseSetCookieHeader('a=1; Domain=example.com', 'https://shop.example.com/').domain).to.eql('.example.com');
+			expect(parseSetCookieHeader('a=1; Domain=.example.com', 'https://example.com/').domain).to.eql('.example.com');
+		});
+
+		it('should reject a Domain not covering the request host', () => {
+			expect(parseSetCookieHeader('session=attacker; Domain=target.com', 'https://ads.example.net/pixel.gif')).to.eql(null);
+			expect(parseSetCookieHeader('a=1; Domain=shop.example.com', 'https://example.com/')).to.eql(null);
+			expect(parseSetCookieHeader('a=1; Domain=example.com', 'https://badexample.com/')).to.eql(null);
+		});
 	});
 
 	describe('cookieMatchesUrl', () => {
