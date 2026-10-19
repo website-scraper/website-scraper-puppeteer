@@ -193,6 +193,14 @@ describe('Cookies', () => {
 			expect(reads).to.eql(3);
 		});
 
+		it('should read the browser jar for every request with cache disabled', async () => {
+			let reads = 0;
+			const jar = createBrowserCookieJar({ cookies: async () => { reads++; return []; } }, { cache: false });
+			await jar.getCookieString('http://example.com/');
+			await jar.getCookieString('http://example.com/');
+			expect(reads).to.eql(2);
+		});
+
 		it('should not cache a failed read of the browser jar', async () => {
 			let fail = true;
 			const jar = createBrowserCookieJar({

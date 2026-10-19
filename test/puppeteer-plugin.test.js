@@ -146,6 +146,26 @@ describe('Puppeteer plugin test', () => {
 		});
 	});
 
+	describe('exclusiveRendering: false', () => {
+		let plainResult, plainContent;
+
+		before('scrape website', async () => {
+			plainResult = await scrape({
+				urls: [`http://localhost:${SERVE_WEBSITE_PORT}`],
+				directory: directory,
+				plugins: [ new PuppeteerPlugin({ exclusiveRendering: false }) ]
+			});
+		});
+		before('get content from file', () => {
+			plainContent = fs.readFileSync(`${directory}/${plainResult[0].filename}`).toString();
+		});
+		after('delete dir', () => fs.removeSync(directory));
+
+		it('should render dynamic website without the render lock', () => {
+			expect(plainContent).to.contain('<div id="root">Hello world from JS!</div>');
+		});
+	});
+
 	describe('CJK content with charset only in meta tag', () => {
 		let cjkResult, cjkContent;
 

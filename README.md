@@ -50,6 +50,7 @@ await scrape({
         launchOptions: { headless: "new" }, /* optional */
         gotoOptions: { waitUntil: "networkidle0" }, /* optional */
         scrollToBottom: { timeout: 10000, viewportN: 10 }, /* optional */
+        exclusiveRendering: true, /* optional */
       })
     ]
 });
@@ -60,12 +61,13 @@ Puppeteer plugin constructor accepts next params:
 * `scrollToBottom` - *(optional)* - in some cases, the page needs to be scrolled down to render its assets (lazyloading). Because some pages can be really endless, the scrolldown process can be interrupted before reaching the bottom when one or both of the bellow limitations are reached:
     * `timeout` - in milliseconds
     * `viewportN` - viewport height multiplier
+* `exclusiveRendering` - *(optional, default `true`)* - render pages one at a time and never while other requests are in flight, so cookies rotated by a page (see [Cookies](#cookies)) are never presented stale. Set to `false` for websites which don't rotate cookies: pages are then rendered concurrently, which is considerably faster on large websites.
 
 ## Cookies
 Cookies passed in `request.headers.Cookie` (website-scraper option) are set into the browser's cookie jar for the scraped urls' hosts (including their subdomains), so pages opened in puppeteer send them too — but they are not leaked to other domains.
 This also applies when a scraped url redirects to a different host (e.g. `example.com` → `shop.example.net`): the redirect target does not receive the configured cookies unless its host is listed in `urls`.
 The jar is the source of truth afterwards: if the website rotates or refreshes cookies (via `Set-Cookie`, including on redirects, or js executed on the page), the updated cookies are used for all subsequent requests.
-To keep rotated cookies consistent, pages are rendered one at a time and never while other requests are in flight, regardless of `requestConcurrency`.
+To keep rotated cookies consistent, pages are rendered one at a time and never while other requests are in flight, regardless of `requestConcurrency` (see the `exclusiveRendering` option to disable this).
 
 ```javascript
 await scrape({
