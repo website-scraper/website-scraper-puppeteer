@@ -61,6 +61,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Install Chrome for Puppeteer
+        # npm v12 disables install scripts by default, so Puppeteer's
+        # postinstall no longer downloads Chrome automatically.
+        run: npx puppeteer browsers install chrome
+
       - name: List of installed dependencies
         run: npm ls -a
 
