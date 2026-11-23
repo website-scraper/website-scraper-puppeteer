@@ -18,7 +18,7 @@
   "dependencies": {
     "@website-scraper/puppeteer-version-wrapper": "^1.0.0",
     "debug": "^4.1.1",
-    "set-cookie-parser": "^3.1.2"
+    "set-cookie-parser": "^4.0.0"
   },
   "peerDependencies": {
     "website-scraper": "^6.0.0"
